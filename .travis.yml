@@ -1,0 +1,12 @@
+language: cpp
+sudo: required
+
+before_install:
+  - env
+
+script:
+  - ls -lh
+
+after_success:
+  - echo "SUCCESS"
+  
