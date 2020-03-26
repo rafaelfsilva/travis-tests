@@ -3,6 +3,8 @@ sudo: required
 
 before_install:
   - env
+  - echo "------------------------------------------------"
+  - git rev-parse --abbrev-ref HEAD
 
 script:
   - ls -lh
