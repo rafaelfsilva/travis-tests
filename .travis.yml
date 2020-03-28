@@ -14,12 +14,12 @@ services:
 before_install:
   - docker pull wrenchproject/wrench:1.5
   - docker run -m 1g -d -t --name=wrench wrenchproject/wrench:1.5 bash;
-  - docker exec -it wrench git clone https://github.com/rafaelfsilva/travis-test;
-  - docker exec -it wrench mkdir travis-test/build;
+  - docker exec -it wrench git clone https://github.com/rafaelfsilva/travis-tests;
+  - docker exec -it wrench mkdir travis-tests/build;
 
 script:
-  - docker exec -w /home/wrench/travis-test/build -it wrench cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..;
-  - docker exec -w /home/wrench/travis-test/build -it wrench make all;
+  - docker exec -w /home/wrench/travis-tests/build -it wrench cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..;
+  - docker exec -w /home/wrench/travis-tests/build -it wrench make all;
 
 after_success:
   - build-wrapper-linux-x86-64 --out-dir bw-output make clean all;
