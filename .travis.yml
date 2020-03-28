@@ -23,6 +23,7 @@ script:
 
 after_success:
   - docker exec -it wrench mkdir travis-tests/sonar;
+  - which build-wrapper-linux-x86-64;
   - docker cp `whereis build-wrapper-linux-x86-64` wrench:/home/wrench/travis-tests/sonar;
   - docker exec -w /home/wrench/travis-tests/sonar -it wrench ls -lh;
   - docker exec -w /home/wrench/travis-tests/sonar -it wrench cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..;
