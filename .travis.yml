@@ -25,6 +25,7 @@ after_success:
   - docker exec -it wrench mkdir travis-tests/sonar;
   - SONARPATH=$(dirname "`which build-wrapper-linux-x86-64`")
   - docker cp $SONARPATH wrench:/home/wrench/travis-tests/sonar;
+  - which sonar-scanner;
   - docker cp `which sonar-scanner` wrench:/home/wrench/travis-tests/sonar;
   - docker exec -w /home/wrench/travis-tests/sonar -it wrench ls -lh;
   - docker exec -w /home/wrench/travis-tests/sonar -it wrench cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..;
