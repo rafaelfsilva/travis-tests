@@ -26,7 +26,7 @@ after_success:
   - SONARPATH=$(dirname "`which build-wrapper-linux-x86-64`")
   - docker cp $SONARPATH wrench:/home/wrench/travis-tests/sonar;
   - docker cp /home/travis/.sonarscanner/sonar-scanner.zip wrench:/home/wrench/travis-tests/sonar;
-  - docker exec -w /home/wrench/travis-tests/sonar -it wrench cp ../sonar-projject.properties .;
+  - docker exec -w /home/wrench/travis-tests/sonar -it wrench cp ../sonar-project.properties .;
   - docker exec -w /home/wrench/travis-tests/sonar -it wrench unzip sonar-scanner.zip;
   - docker exec -w /home/wrench/travis-tests/sonar -it wrench ls -lh;
   - docker exec -w /home/wrench/travis-tests/sonar -it wrench cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..;
