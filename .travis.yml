@@ -25,4 +25,6 @@ after_success:
   - docker cp wrench:/home/wrench/travis-tests .;
   - cd travis-tests;
   - build-wrapper-linux-x86-64 --out-dir bw-output make all;
+  - ls -lh;
+  - cat bw-output/build-wrapper-dump.json;
   - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.login=$SONAR_TOKEN;
