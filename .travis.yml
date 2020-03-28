@@ -22,11 +22,19 @@ script:
   - docker exec -w /home/wrench/travis-tests/build -it wrench make all;
 
 after_success:
-  - docker cp wrench:/home/wrench/travis-tests .;
-  - cd travis-tests;
-  - mkdir sonar; cd sonar; cmake ..;
-  - build-wrapper-linux-x86-64 --out-dir bw-output make all;
-  - ls -lh bw-output;
-  - cat bw-output/build-wrapper-dump.json;
-  - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.login=$SONAR_TOKEN;
-  - cd ../..;
+  - docker exec -it wrench mkdir travis-tests/sonar;
+  - docker cp `whereis build-wrapper-linux-x86-64` wrench:/home/wrench/travis-tests/sonar;
+  - docker exec -w /home/wrench/travis-tests/sonar -it wrench ls -lh;
+  - docker exec -w /home/wrench/travis-tests/sonar -it wrench cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..;
+  - docker exec -w /home/wrench/travis-tests/sonar -it wrench ./build-wrapper-linux-x86-64 --out-dir bw-output make all;
+  - docker exec -w /home/wrench/travis-tests/sonar -it wrench ls -lh bw-output;
+  - docker exec -w /home/wrench/travis-tests/sonar -it wrench cat bw-output/build-wrapper-dump.json;
+
+  # - docker cp wrench:/home/wrench/travis-tests .;
+  # - cd travis-tests;
+  # - mkdir sonar; cd sonar; cmake ..;
+  # - build-wrapper-linux-x86-64 --out-dir bw-output make all;
+  # - ls -lh bw-output;
+  # - cat bw-output/build-wrapper-dump.json;
+  # - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.login=$SONAR_TOKEN;
+  # - cd ../..;
