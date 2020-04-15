@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e # exit with nonzero exit code if anything fails
+
+echo "Starting to update gh-pages"
+
+echo "=============================================="
+env
+echo "=============================================="
+echo ""
+
+if [[ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST == "false" && "$TRAVIS_OS_NAME" == "linux" && $DIST == "ubuntu-bionic" && $COMPILER == "gcc7" && $BATSCHED == "off" ]] || [[ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST == "false" && "$TRAVIS_OS_NAME" == "linux" && $DIST == "ubuntu-bionic" && $COMPILER == "gcc7-batsched" && $BATSCHED == "on" ]]; then
+  echo "Done updating gh-pages."
+
+else
+ echo "Skipped updating gh-pages."
+fi;

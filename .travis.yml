@@ -8,6 +8,9 @@ addons:
   sonarcloud:
     organization: "rafaelfsilva"
 
+env:
+  - DIST=ubuntu-bionic COMPILER=gcc7 batsched=off
+
 services:
   - docker
 
@@ -22,15 +25,16 @@ script:
   - docker exec -w /home/wrench/travis-tests/build -it wrench make all;
 
 after_success:
-  - docker exec -it wrench mkdir travis-tests/sonar;
-  - SONARPATH=$(dirname "`which build-wrapper-linux-x86-64`")
-  - docker cp $SONARPATH wrench:/home/wrench/travis-tests/sonar;
-  - docker exec -w /home/wrench/travis-tests/sonar -it wrench ls -lh;
-  - docker exec -w /home/wrench/travis-tests/sonar -it wrench cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..;
-  - docker exec -w /home/wrench/travis-tests/sonar -it wrench ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output make all;
-  - docker cp /home/travis/.sonarscanner/sonar-scanner.zip wrench:/home/wrench/travis-tests;
-  - docker exec -w /home/wrench/travis-tests -it wrench unzip sonar-scanner.zip;
-  - docker exec -w /home/wrench/travis-tests -it wrench ./sonar-scanner-3.0.3.778/bin/sonar-scanner -Dsonar.cfamily.build-wrapper-output=sonar/bw-output -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN;
+  - bash .travis.publish
+  # - docker exec -it wrench mkdir travis-tests/sonar;
+  # - SONARPATH=$(dirname "`which build-wrapper-linux-x86-64`")
+  # - docker cp $SONARPATH wrench:/home/wrench/travis-tests/sonar;
+  # - docker exec -w /home/wrench/travis-tests/sonar -it wrench ls -lh;
+  # - docker exec -w /home/wrench/travis-tests/sonar -it wrench cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..;
+  # - docker exec -w /home/wrench/travis-tests/sonar -it wrench ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output make all;
+  # - docker cp /home/travis/.sonarscanner/sonar-scanner.zip wrench:/home/wrench/travis-tests;
+  # - docker exec -w /home/wrench/travis-tests -it wrench unzip sonar-scanner.zip;
+  # - docker exec -w /home/wrench/travis-tests -it wrench ./sonar-scanner-3.0.3.778/bin/sonar-scanner -Dsonar.cfamily.build-wrapper-output=sonar/bw-output -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN;
 
   # - docker cp wrench:/home/wrench/travis-tests .;
   # - cd travis-tests;
