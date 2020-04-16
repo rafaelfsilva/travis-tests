@@ -31,7 +31,7 @@ script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       docker exec -w /home/wrench/wrench/build -it wrench cmake -DENABLE_BATSCHED=${batsched} -DCMAKE_VERBOSE_MAKEFILE=ON ..;
       docker exec -w /home/wrench/wrench/build -it wrench make doc-gh;
-      docker exec -w /home/wrench/wrench/build -it wrench ls -lh docs;
+      docker exec -w /home/wrench/wrench -it wrench ls -lh docs;
     fi
 
 after_success:
