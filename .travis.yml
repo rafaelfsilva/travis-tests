@@ -5,8 +5,6 @@ addons:
   apt:
     packages:
       - docker-ce
-  sonarcloud:
-    organization: "rafaelfsilva"
 
 env:
   - DIST=ubuntu-bionic COMPILER=gcc7 batsched=off
@@ -15,32 +13,36 @@ services:
   - docker
 
 before_install:
-  - docker pull wrenchproject/wrench:1.5
-  - docker run -m 1g -d -t --name=wrench wrenchproject/wrench:1.5 bash;
-  - docker exec -it wrench git clone https://github.com/rafaelfsilva/travis-tests;
-  - docker exec -it wrench mkdir travis-tests/build;
+  # install container
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      docker pull wrenchproject/wrench-build:${DIST}-${COMPILER};
+      docker run -m 1g -d -t --name=wrench wrenchproject/wrench-build:${DIST}-${COMPILER} bash;
+      docker exec -it wrench git clone https://github.com/wrench-project/wrench;
+    fi
+  - if [[ "$TRAVIS_BRANCH" != "HEAD" ]]; then
+      docker exec -w /home/wrench/wrench -it wrench git checkout ${TRAVIS_BRANCH};
+    fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      docker exec -it wrench mkdir wrench/build;
+    fi
 
 script:
-  - docker exec -w /home/wrench/travis-tests/build -it wrench cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..;
-  - docker exec -w /home/wrench/travis-tests/build -it wrench make all;
+  # building wrench
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      docker exec -w /home/wrench/wrench/build -it wrench cmake -DENABLE_BATSCHED=${batsched} -DCMAKE_VERBOSE_MAKEFILE=ON ..;
+      docker exec -w /home/wrench/wrench/build -it wrench make doc-gh;
+      docker exec -w /home/wrench/wrench/build -it wrench ls -lh docs;
+    fi
 
 after_success:
-  - bash .travis.publish
-  # - docker exec -it wrench mkdir travis-tests/sonar;
-  # - SONARPATH=$(dirname "`which build-wrapper-linux-x86-64`")
-  # - docker cp $SONARPATH wrench:/home/wrench/travis-tests/sonar;
-  # - docker exec -w /home/wrench/travis-tests/sonar -it wrench ls -lh;
-  # - docker exec -w /home/wrench/travis-tests/sonar -it wrench cmake -DCMAKE_VERBOSE_MAKEFILE=ON ..;
-  # - docker exec -w /home/wrench/travis-tests/sonar -it wrench ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output make all;
-  # - docker cp /home/travis/.sonarscanner/sonar-scanner.zip wrench:/home/wrench/travis-tests;
-  # - docker exec -w /home/wrench/travis-tests -it wrench unzip sonar-scanner.zip;
-  # - docker exec -w /home/wrench/travis-tests -it wrench ./sonar-scanner-3.0.3.778/bin/sonar-scanner -Dsonar.cfamily.build-wrapper-output=sonar/bw-output -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN;
+  # coverage analysis and sonarcloud
+  - docker cp wrench:/home/wrench/wrench/docs .;
+  - ls -lh
+  - cp -R ./gh-pages $HOME/gh-pages-to-deploy
+  - ls -lh $HOME
 
-  # - docker cp wrench:/home/wrench/travis-tests .;
-  # - cd travis-tests;
-  # - mkdir sonar; cd sonar; cmake ..;
-  # - build-wrapper-linux-x86-64 --out-dir bw-output make all;
-  # - ls -lh bw-output;
-  # - cat bw-output/build-wrapper-dump.json;
-
-  # - cd ../..;
+# deploy:
+#   provider: script
+#   script: bash .travis.publish
+#   on:
+#     branch: ${TRAVIS_BRANCH}
