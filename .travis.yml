@@ -38,7 +38,8 @@ after_success:
   # coverage analysis and sonarcloud
   - docker cp wrench:/home/wrench/wrench/docs .;
   - ls -lh
-  - cp -R ./gh-pages $HOME/gh-pages-to-deploy
+  - ls -lh docs
+  - cp -R ./docs/gh-pages $HOME/gh-pages-to-deploy
   - ls -lh $HOME
 
 # deploy:
