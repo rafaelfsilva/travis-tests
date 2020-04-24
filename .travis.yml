@@ -34,3 +34,4 @@ script:
 
 after_success:
   - echo "AFTER SUCCESS"
+  - env
