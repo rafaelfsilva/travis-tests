@@ -14,13 +14,16 @@ services:
 
 jobs:
   include:
-    - stage: build
+    - stage: "Source Build"
+      name: "Ubuntu Xenial - clang"
       env: DIST=ubuntu-xenial COMPILER=clang batsched=off
-    - # stage build
+    - name: "Ubuntu Xenial - clang-6"
       env: DIST=ubuntu-xenial COMPILER=clang-6 batsched=off
-    - stage: test
+    - stage: "Unit Tests"
+      name: "Ubuntu Xenial - clang-6"
       env: DIST=ubuntu-xenial COMPILER=clang-6 batsched=off
-    - stage: deploy
+    - stage: "Documentation Build and Deployment"
+      name: "Ubuntu Xenial - clang-6"
       env: DIST=ubuntu-xenial COMPILER=clang-6 batsched=off
 
 before_install:
