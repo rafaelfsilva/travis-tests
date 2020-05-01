@@ -52,7 +52,7 @@ script:
   - env
   - echo "---------------------------------------------------------------------"
   - if [[ "$TRAVIS_BUILD_STAGE_NAME" == "Code Quality Analysis" ]] && [[ "$TRAVIS_BRANCH" == "HEAD" ]]; then
-      echo "YES"
+      echo "YES";
     fi
 
 after_success:
